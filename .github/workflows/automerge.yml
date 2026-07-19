@@ -1,0 +1,66 @@
+name: Auto-merge
+
+# Squash-merges a PR as soon as its CI run goes green.
+# Native GitHub auto-merge needs required-status-check branch protection, which
+# free private repos don't get — so we trigger off the CI workflow completing
+# successfully instead. deploy.yml doesn't run on PRs, so a green CI run means
+# the PR is green.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write # to dispatch deploy.yml after merging
+
+jobs:
+  automerge:
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge the PR whose CI just passed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+
+          # Only consider PRs whose head branch lives in this repo — never
+          # auto-merge a PR opened from a fork.
+          pr=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
+                 --jq '.[] | select(.state=="open" and .head.repo.full_name==env.REPO) | .number' | head -n1)
+          if [ -z "${pr:-}" ]; then
+            echo "No open PR for $HEAD_SHA — nothing to merge."
+            exit 0
+          fi
+
+          meta=$(gh pr view "$pr" --repo "$REPO" --json isDraft,labels,author)
+          # Only auto-merge PRs opened by the repo owner.
+          author=$(echo "$meta" | jq -r .author.login)
+          if [ "$author" != "$OWNER" ]; then
+            echo "PR #$pr authored by '$author', not owner '$OWNER' — skipping."
+            exit 0
+          fi
+          if [ "$(echo "$meta" | jq -r .isDraft)" = "true" ]; then
+            echo "PR #$pr is a draft — skipping."
+            exit 0
+          fi
+          # Escape hatch: add the 'no-automerge' label to hold a PR open.
+          if echo "$meta" | jq -e '.labels[]? | select(.name=="no-automerge")' >/dev/null; then
+            echo "PR #$pr has the no-automerge label — skipping."
+            exit 0
+          fi
+
+          # --match-head-commit ensures we only merge the exact commit CI
+          # validated — if the branch moved since, the merge is refused.
+          echo "CI green for #$pr — squash-merging."
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch --match-head-commit "$HEAD_SHA"
+
+          echo "Dispatching deploy.yml (push by GITHUB_TOKEN won't trigger it)."
+          gh workflow run deploy.yml --repo "$REPO" --ref main

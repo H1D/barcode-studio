@@ -1,0 +1,566 @@
+/* Barcode Studio — utilitarian work-tool styling. Screen chrome + exact-mm print. */
+
+:root {
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --ink: #1a1d21;
+  --muted: #5b6169;
+  --line: #d8dbe0;
+  --accent: #1f6feb;
+  --accent-ink: #ffffff;
+  --warn-bg: #fff4e0;
+  --warn-line: #e0a94a;
+  --warn-ink: #7a4e00;
+  --danger-bg: #fdeaea;
+  --danger-line: #d4726f;
+  --danger-ink: #8a1f1c;
+  --ok-bg: #e9f6ec;
+  --ok-line: #6fae7e;
+  --ok-ink: #1f6b33;
+  --radius: 8px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+#app {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ─── Header ─── */
+.app-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.app-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+.app-sub {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ─── Layout ─── */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(420px, 1.1fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+.col-left,
+.col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel,
+.ctl-group,
+.preview,
+.guards,
+.actions,
+.print-help {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.ctl-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* ─── Item table ─── */
+.item-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.it-head,
+.it-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 72px 32px;
+  gap: 8px;
+  align-items: start;
+}
+.it-head {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  padding: 0 2px 2px;
+}
+.item-table input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+.it-ean-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.item-table input.invalid,
+.item-table input[aria-invalid="true"] {
+  border-color: var(--danger-line);
+  background: var(--danger-bg);
+}
+.row-error {
+  color: var(--danger-ink);
+  font-size: 11px;
+  padding-left: 2px;
+}
+.btn-icon {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  height: 30px;
+}
+.btn-icon:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.btn-add {
+  align-self: flex-start;
+  margin-top: 4px;
+  background: none;
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: var(--accent);
+  font: inherit;
+}
+.item-table input:disabled {
+  background: #f2f3f5;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.qty-hint {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 2px 2px 0;
+}
+.items-intro {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ─── Controls ─── */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ctl-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.ctl-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+.ctl-field .num,
+.ctl-field .sel,
+.sel {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+.ctl-field .num {
+  width: 90px;
+  text-align: right;
+}
+.sel {
+  width: 100%;
+}
+.ctl-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+/* Custom-stock fieldset (shown when 'Custom size…' is selected) */
+.custom-stock {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 14px;
+}
+.custom-stock .ctl-field {
+  margin-bottom: 6px;
+}
+.custom-stock .num {
+  width: 78px;
+}
+.custom-error {
+  grid-column: 1 / -1;
+}
+@media (max-width: 480px) {
+  .custom-stock {
+    grid-template-columns: 1fr;
+  }
+}
+.mag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.slider {
+  flex: 1;
+}
+.mag-readout {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  min-width: 44px;
+  text-align: right;
+}
+
+/* ─── Badges / guards ─── */
+/* The [hidden] attribute must beat explicit `display` rules below (e.g. the
+   inline-block badge), else toggling `.hidden` on an element does nothing. */
+[hidden] {
+  display: none !important;
+}
+.badge-row {
+  min-height: 0;
+}
+.badge-warn {
+  display: inline-block;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  color: var(--warn-ink);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+.badge-danger {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-line);
+  color: var(--danger-ink);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.guards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.guard {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.guard-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.guard-block {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-line);
+  color: var(--danger-ink);
+}
+.guard-block .guard-tag {
+  background: var(--danger-line);
+  color: #fff;
+}
+.guard-warn {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  color: var(--warn-ink);
+}
+.guard-warn .guard-tag {
+  background: var(--warn-line);
+  color: #fff;
+}
+.guard-ok {
+  background: var(--ok-bg);
+  border: 1px solid var(--ok-line);
+  color: var(--ok-ink);
+  padding: 8px 10px;
+}
+
+/* ─── Preview ─── */
+.preview-head,
+.zoom-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-info {
+  font-size: 12px;
+  color: var(--muted);
+}
+.a4-frame {
+  background: #e7e9ee;
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+}
+.a4-stage {
+  width: 100%;
+  max-width: 420px;
+}
+.a4-holder {
+  position: relative;
+  width: 100%;
+}
+/* On screen: scale the exact-mm SVG down to fit the column via CSS only.
+   The SVG keeps its mm viewBox; we just size the element. */
+.a4-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 210 / 297;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+/* Screen-only guide overlay (quiet-zone band + dashed die-cut boundaries). It sits
+   exactly over the page art and is hidden for print (belt-and-braces; the preview
+   is never in .print-area anyway). */
+.preview-guides {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.preview-legend {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.preview-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 210 / 297;
+  color: var(--muted);
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  text-align: center;
+  padding: 20px;
+}
+.label-zoom {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  background: #e7e9ee;
+  border-radius: 6px;
+  padding: 12px;
+}
+.label-svg {
+  width: 240px;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Actions ─── */
+.calib-oneliner {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.btn {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+.btn:hover:not(:disabled) {
+  background: #f2f3f5;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(0.95);
+}
+.btn-ghost {
+  border-style: dashed;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.action-status {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 1em;
+}
+
+/* ─── Print help ─── */
+.help-list {
+  margin: 0 0 8px;
+  padding-left: 18px;
+}
+.help-list li {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+.help-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ─── Calibration gate dialog ─── */
+dialog.calib-gate {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 22px;
+  max-width: 460px;
+  width: calc(100% - 32px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+}
+dialog.calib-gate::backdrop {
+  background: rgba(20, 22, 26, 0.45);
+}
+dialog.calib-gate h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+dialog.calib-gate p {
+  color: var(--ink);
+  font-size: 13px;
+}
+.gate-ack {
+  align-items: flex-start;
+  margin: 14px 0;
+  padding: 10px;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: 6px;
+}
+.gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ─── Print area: hidden on screen, exact-mm true size on paper ─── */
+.print-area {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+}
+.print-page {
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+}
+.print-page > svg {
+  display: block;
+  width: 210mm;
+  height: 297mm;
+}
+/* Each label cell is a nested <svg> with overflow=hidden from core; belt-and-braces. */
+.print-page svg svg {
+  overflow: hidden;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  /* Hide all screen chrome; show only the true-mm print area. */
+  body * {
+    visibility: hidden;
+  }
+  /* Screen-only guides must never reach paper (explicit, in addition to the
+     visibility rule above). */
+  .preview-guides,
+  .preview-legend {
+    display: none !important;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+  }
+  .print-page {
+    page-break-after: always;
+    break-after: page;
+  }
+  .print-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}

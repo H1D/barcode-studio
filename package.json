@@ -1,0 +1,27 @@
+{
+  "name": "barcode-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Free client-side EAN-13 label-sheet generator — print-perfect A4 barcode sheets as deterministic vector PDFs.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "jspdf": "^3.0.1",
+    "svg2pdf.js": "^2.5.0"
+  },
+  "devDependencies": {
+    "oxlint": "^1.71.0",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.4",
+    "wrangler": "4.112.0"
+  }
+}
