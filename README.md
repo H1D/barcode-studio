@@ -38,6 +38,28 @@ silently rescale if you let them.
 
 Always run the calibration sheet against a new stock before printing a batch.
 
+## Shareable URLs
+
+The address bar always mirrors the current setup (only fields that differ from
+the defaults appear), so copying the URL shares your exact sheet. Query params
+also work as input — they override any locally saved state on load:
+
+```
+?item=EAN:QTY:SKU        one per row, repeatable; 12-digit EANs get their
+                         checksum computed (SKU may contain colons)
+?stock=<preset id>       a4-40, avery-l7160, avery-l7159, avery-3475
+?fill=exact|fillPage
+?mag=0.9                 barcode magnification (0.8–1.0)
+?skuPad / digPad         text padding in mm
+?skuFont / digFont       font sizes in pt
+?showSku / showDigits    1 or 0
+```
+
+Example: `?item=4006381333931:24:SHELF-A&stock=avery-l7159&fill=exact`
+
+Out-of-bounds or malformed values are ignored individually. Custom stock
+geometry lives only in localStorage and is not encoded in the URL.
+
 ## Develop
 
 ```bash

@@ -1,6 +1,7 @@
 import type { SheetSpec } from '../core'
 import { el } from './dom'
 import { loadSpec, saveSpec, clone } from './persist'
+import { applySearchToSpec, specToSearch } from './urlSync'
 import { ItemTable, rowsFromItems, rowsToItems, allRowsValid, type ItemRow } from './itemTable'
 import { Controls } from './controls'
 import { Preview } from './preview'
@@ -14,6 +15,9 @@ import { computeGuards, isPrintSafe, expandedLabelCount, MAX_LABELS, type Guard 
 
 export function mountApp(root: HTMLElement): void {
   const state: SheetSpec = loadSpec()
+  // Query params override the restored spec field-by-field, so a shared link
+  // opens with the sender's setup regardless of this browser's saved state.
+  applySearchToSpec(state, window.location.search)
 
   root.textContent = ''
   root.append(buildHeader())
@@ -97,10 +101,25 @@ export function mountApp(root: HTMLElement): void {
     return ''
   }
 
+  // Mirror the spec into the address bar (replaceState — no history spam) so
+  // the URL is always a shareable deep link. Only non-default fields are
+  // written; foreign params (utm_* etc.) are preserved. Best-effort: some
+  // embeds (sandboxed iframes, file://) refuse replaceState.
+  function syncUrl(): void {
+    try {
+      const qs = specToSearch(state, window.location.search)
+      const url = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`
+      history.replaceState(history.state, '', url)
+    } catch {
+      /* URL sync unavailable — keep running */
+    }
+  }
+
   function onStateChanged(): void {
     // Project current valid rows into state before rendering.
     state.items = rowsToItems(rows)
     saveSpec(state)
+    syncUrl()
     preview.update(state)
     const guards = computeGuards(state)
     renderGuards(guardsPanel, guards, rows)

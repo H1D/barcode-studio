@@ -5,7 +5,8 @@ const KEY = 'barcode-studio:spec'
 
 // Sane bounds — a config outside these is treated as corrupt and discarded rather
 // than silently restored (never resurrect a sub-scan or broken layout).
-const BOUNDS = {
+// Shared with urlSync, which applies the same bounds to query-param input.
+export const BOUNDS = {
   magnification: { min: 0.8, max: 1.0 },
   pad: { min: 0, max: 20 },
   font: { min: 4, max: 24 },
@@ -14,8 +15,8 @@ const BOUNDS = {
 
 // Restored string fields are length-capped so a hand-edited blob can't smuggle in
 // a runaway SKU/EAN. EAN is 13 digits max; SKU is a short human label.
-const MAX_SKU_LEN = 64
-const MAX_EAN_LEN = 13
+export const MAX_SKU_LEN = 64
+export const MAX_EAN_LEN = 13
 
 /** Persist the current spec. Non-fatal on failure (private mode / quota). */
 export function saveSpec(spec: SheetSpec): void {
@@ -47,7 +48,7 @@ export function clone<T>(v: T): T {
   return JSON.parse(JSON.stringify(v)) as T
 }
 
-function inRange(v: unknown, lo: number, hi: number): v is number {
+export function inRange(v: unknown, lo: number, hi: number): v is number {
   return typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi
 }
 
